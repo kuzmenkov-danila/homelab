@@ -20,9 +20,13 @@ imagePullSecrets:
   - schoolbot-harbor-pull
 publicBaseUrl: https://bot.sch1357.ru
 cookieSecure: true
+# No Authentik OIDC. The admin UI is off. Native admin login is the
+# agreed exception for this public MAX bot.
 adminUi: false
 updateMode: polling
 timezone: Europe/Moscow
+# Before the first sync, create namespace schoolbot, Secret schoolbot-env,
+# and dockerconfigjson Secret schoolbot-harbor-pull from the pull-only robot.
 # The operator creates basic-auth Secret schoolbot-db in namespace postgres.
 # CNPG does not generate this password. Copy username and password into
 # schoolbot-env. Percent-encode DATABASE_PASSWORD: Kubernetes inserts it into
@@ -35,6 +39,9 @@ envSecretName: schoolbot-env
 podSecurity:
   user: 10001
   group: 10001
+# Default StorageClass, ReadWriteOnce, one node. Not highly available.
+# Image rollback does not restore this volume or database migrations.
+# Do not delete the PVC or namespace as a rollback.
 attachments:
   size: 5Gi
 ...
